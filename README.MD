@@ -17,12 +17,15 @@ Here i have used H2 type inMemory database (Spring supports H2, HSQL, Derby)
 
 ## How to RUN.
  get into the root directory.
+ 
  ./gradlew clean test
    --To run the test cases.
+ 
  ./gradlew clean build
    --To prepare the runnable jar. This task also executes the Test cases under test package.
 
  For eclipse lovers.
+ 
  ./gradlew eclipse
    --Creates the .project and .classpath files, so that you can import to eclipse.
 
