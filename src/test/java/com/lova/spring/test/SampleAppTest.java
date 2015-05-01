@@ -10,9 +10,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.Serializable;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by Lovababu on 4/26/2015.
@@ -33,11 +37,17 @@ public class SampleAppTest {
 
     @Test
     public void testUpdate(){
-        testCreate(); //In this step Record will be inserted with the Id '100',
-                      // since it has hardcode in the above test case.
-        SampleDomain domain = sampleService.update(getSampleDomain(123L, "avol", "TPK"));
+        // Create first and then update.
+        SampleDomain domainToBeInserted = getSampleDomain(101L, "Name 1", "Address 1");
+        Long id = (Long) sampleService.insert(domainToBeInserted);
 
-        assertEquals(domain.getName(), "avol");
+        assertEquals(id, domainToBeInserted.getId());
+
+        //Here update the name and Address for the same record, then update in DB.
+        SampleDomain domainUpdated = sampleService.update(getSampleDomain(id, "Name 2", "Address 2"));
+
+        assertEquals("Name 2", domainUpdated.getName());
+        assertEquals("Address 2", domainUpdated.getAddress());
     }
 
     @Test
@@ -45,7 +55,7 @@ public class SampleAppTest {
         //refer. my-test-data.sql, record has already inserted by embedded b with the SID: 100
         SampleDomain domain = getSampleDomain(100L, null, null);
         domain = sampleService.get(domain);
-        assertEquals(domain.getName(), "SRILEKHA");
+        assertEquals(domain.getName(), "Avol");
     }
 
     @Test
@@ -56,6 +66,24 @@ public class SampleAppTest {
 
         domain = sampleService.get(domain);//No records found.
         assertNull(domain);
+    }
+
+    @Test
+    public void testListView(){
+        testCreate();
+        List<SampleDomain> list = sampleService.listView();
+        assertNotNull(list);
+        System.out.println("----------------TABLE DATA ---------------------");
+        System.out.println("SID    |   NAME      |    Address    ");
+        System.out.println("......................................");
+
+        long count = list.stream().map(sampleDomain -> printPrettyFormat(sampleDomain)).count();
+        assertNotEquals(count, 0);
+    }
+
+    private Void printPrettyFormat(SampleDomain domain) {
+        System.out.println(domain.getId() +"    |    " + domain.getName() + "  |   " + domain.getAddress());
+        return null;
     }
 
     private SampleDomain getSampleDomain(Long id, String name, String addr){

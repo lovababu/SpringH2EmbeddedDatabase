@@ -4,27 +4,24 @@ import com.lova.spring.dao.SampleDao;
 import com.lova.spring.dao.impl.SampleDaoImpl;
 import com.lova.spring.service.SampleService;
 import com.lova.spring.service.impl.SampleServiceImpl;
-import com.zaxxer.hikari.HikariDataSource;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.SessionFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.jdbc.datasource.embedded.*;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
+import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.io.IOException;
-import java.sql.Driver;
 import java.util.Properties;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Lovababu on 4/26/2015.
@@ -33,9 +30,8 @@ import java.util.concurrent.TimeUnit;
 @ComponentScan(basePackages = {"com.lova.spring.service", "com.lova.spring.dao"})
 @PropertySource("classpath:dbConfig.properties")
 @EnableTransactionManagement
+@Slf4j
 public class AppConfig {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AppConfig.class);
 
     @Value("${hibernate.hibernateDialect}")
     private String hibernateDialect;
@@ -73,13 +69,19 @@ public class AppConfig {
         return sessionFactoryBean.getObject();
     }
 
+    /**
+     * Spring provided H2 Embedded Database. Read the dbscript and initiates the Database with the name H2-Test-DB.
+     *
+     * @return
+     */
     @Bean(name = "dataSource")
     public DataSource dataSource(){
         EmbeddedDatabaseBuilder builder = new EmbeddedDatabaseBuilder();
+        builder.setName("H2-Test-DB");
         EmbeddedDatabase db = builder.setType(EmbeddedDatabaseType.H2)
                 .addScript("classpath:dbscript/my-schema.sql")
                 .addScript("classpath:dbscript/my-test-data.sql").build();
-
+        log.info("Initiating the database from dbscript.");
         return db;
     }
 
