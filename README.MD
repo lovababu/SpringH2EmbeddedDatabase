@@ -26,5 +26,5 @@ Here i have used H2 type inMemory database (Spring supports H2, HSQL, Derby)
  ./gradlew eclipse
    --Creates the .project and .classpath files, so that you can import to eclipse.
 
- ##How to run from IDE.
+##How to run from IDE.
  Open the file SampleAppTest.java and Right click run as JUnit application.
