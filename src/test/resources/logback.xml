@@ -1,0 +1,28 @@
+<configuration status="trace" scan="true">
+
+    <appender name="SpringTransactions" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>./logs/app.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>./logs/app.log.%d{yyyy-MM-dd}.%i</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>250MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>10</maxHistory>
+        </rollingPolicy>
+
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d{ISO8601} %-5p [%t]: [%c{1}] %m%n %X{uniqueID}-</pattern>
+        </encoder>
+    </appender>
+
+    <!-- logger name="org.springframework" level="OFF" />
+    <logger name="org.apache" level="OFF" />
+    <logger name="org.opensaml" level="OFF"/>
+    <logger name="org.hornetq" level= "OFF" / -->
+
+    <root level="DEBUG">
+        <appender-ref ref="SpringTransactions"/>
+    </root>
+
+</configuration>
