@@ -27,7 +27,6 @@ import java.util.Properties;
  * Created by Lovababu on 4/26/2015.
  */
 @Configuration
-@ComponentScan(basePackages = {"com.lova.spring.service", "com.lova.spring.dao"})
 @PropertySource("classpath:dbConfig.properties")
 @EnableTransactionManagement
 @Slf4j
